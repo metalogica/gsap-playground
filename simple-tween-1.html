@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Simple Tween 1</title>
+  <style>
+    body {
+      position: relative;
+      height: 100vh;
+    }
+
+    .circle {
+      position: absolute;
+      top: 25%;
+      left: 25%;
+
+      background-color: red;
+      height: 150px;
+      width: 150px;
+      border-radius: 50%;
+    }
+
+    .square {
+      position: absolute;
+      top: 25%;
+      left: 25%;
+
+      background-color: green;
+      height: 150px;
+      width: 150px;
+    }
+  </style>
+</head>
+<body>
+
+    <div class="circle"></div>
+    <div class="square"></div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.7.0/gsap.min.js"></script>
+  <script>
+    var circleTween = {
+      x: 150,
+      backgroundColor: 'blue'
+    };
+    
+    var squareTween = {
+      x: -150,
+      y: -150,
+      scale: 2,
+      delay: 0,
+      ease: Back.easeOut
+    }
+    
+    TweenMax.to('.circle', 1, circleTween);
+    TweenMax.to('.square', 20, squareTween);
+  </script>
+</body>
+</html>
