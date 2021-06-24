@@ -86,11 +86,18 @@
     </div>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.7.0/gsap.min.js"></script>
   <script>
+    // `TweenMax` is a class imported from the CDN above between the <script> tags
+    // `.staggerFrom` is a method on the TweenMax class
     TweenMax.staggerFrom(
+      // we target the HTMl elements with the class `.triangle`
+      // we set the animation length to 1 seconds
       '.triangle', 1, {
+        // we translate the x and y axes from 200px
+        // we transform opacity from 0 to 1
         x: 200,
         y: 200,
         opacity: 0
+        // we set the stagger until next triangle animation to 0.2 seconds
       }, 0.2)
   </script>
 </body>
