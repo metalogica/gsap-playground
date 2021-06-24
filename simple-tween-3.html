@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Stagger!!!</title>
+  <style>
+    body {
+      height: 100vh;
+      padding: 10%;
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .triangle {
+      width: 5rem;
+      height: 5rem;
+      background-color: crimson;
+      clip-path: polygon(50% 0, 100% 100%, 0 100%);
+      -webkit-clip-path: polygon(50% 0, 100% 100%, 0 100%);
+      -moz-clip-path: polygon(50% 0, 100% 100%, 0 100%);
+      -ms-clip-path: polygon(50% 0, 100% 100%, 0 100%);
+      -o-clip-path: polygon(50% 0, 100% 100%, 0 100%);
+    }
+  </style>
+</head>
+<body>
+    <div class="triangle"></div>
+    <div class="triangle"></div>
+    <div class="triangle"></div>
+    <div class="triangle"></div>
+    <div class="triangle"></div>
+    <div class="triangle"></div>
+    <div class="triangle"></div>
+    <div class="triangle"></div>
+    <div class="triangle"></div>
+    <div class="triangle"></div>
+    <div class="triangle"></div>
+    <div class="triangle"></div>
+    <div class="triangle"></div>
+    <div class="triangle"></div>
+    <div class="triangle"></div>
+    <div class="triangle"></div>
+    <div class="triangle"></div>
+    <div class="triangle"></div>
+    <div class="triangle"></div>
+    <div class="triangle"></div>
+    <div class="triangle"></div>
+    <div class="triangle"></div>
+    <div class="triangle"></div>
+    <div class="triangle"></div>
+    <div class="triangle"></div>
+    <div class="triangle"></div>
+    <div class="triangle"></div>
+    <div class="triangle"></div>
+    <div class="triangle"></div>
+    <div class="triangle"></div>
+    <div class="triangle"></div>
+    <div class="triangle"></div>
+    <div class="triangle"></div>
+    <div class="triangle"></div>
+    <div class="triangle"></div>
+    <div class="triangle"></div>
+    <div class="triangle"></div>
+    <div class="triangle"></div>
+    <div class="triangle"></div>
+    <div class="triangle"></div>
+    <div class="triangle"></div>
+    <div class="triangle"></div>
+    <div class="triangle"></div>
+    <div class="triangle"></div>
+    <div class="triangle"></div>
+    <div class="triangle"></div>
+    <div class="triangle"></div>
+    <div class="triangle"></div>
+    <div class="triangle"></div>
+    <div class="triangle"></div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.7.0/gsap.min.js"></script>
+  <script>
+    TweenMax.staggerFrom(
+      '.triangle', 1, 
+        {
+          x: 200,
+          y: 200,
+          opacity: 0
+        }, 
+      0.2
+      )
+  </script>
+</body>
+</html>
