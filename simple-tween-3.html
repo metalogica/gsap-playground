@@ -32,6 +32,7 @@
     }
 
     .triangle {
+      opacity: 0;
       width: 5rem;
       height: 5rem;
       background-color: crimson;
@@ -100,6 +101,8 @@
     </div>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.7.0/gsap.min.js"></script>
   <script>    
+    // stops the triangles from blinking for 0.5 seconds before animation starts
+    TweenMax.set('.triangle', { opacity: 1 })
     // `TweenMax` is a class imported from the CDN above between the <script> tags
     // `.staggerFrom` is a method on the TweenMax class
     TweenMax.staggerFrom(
