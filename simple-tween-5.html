@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tween Playground | Playback Tween</title>
+  <style>
+    body {
+      position: relative;
+      font-family: sans-serif;
+      margin: 0;
+      padding: 0;
+      width: 100vw;
+      height: 100vh;
+    }
+
+    a, a:link, a:visited, a:active {
+      text-decoration: none;
+      color: black;
+      line-height: 2.5em;
+    }
+
+    a:hover {
+      color: rgba(0,0,0,0.5);
+    }
+
+    .canvas {
+      border: 1px solid mistyrose;
+      width: 90vw;
+      height: 75vh;
+      margin: 0 auto;
+
+      display: flex;
+      flex-wrap: wrap;
+      overflow: hidden;
+    }
+    .canvas__square {
+      position: relative;
+
+      width: 15rem;
+      height: 15rem;
+      border:1px solid black;
+    }
+    .canvas__square--front {
+      position: absolute;
+      top: 0;
+      left: 0;
+      
+      z-index: 2;
+      width: 100%;
+      height: 100%;
+      background-color: mediumslateblue;
+      clip-path: polygon(0 0, 100% 100%, 0 100%);
+      /* -webkit-clip-path: polygon(50% 0, 100% 100%, 0 100%);
+      -moz-clip-path: polygon(50% 0, 100% 100%, 0 100%);
+      -ms-clip-path: polygon(50% 0, 100% 100%, 0 100%);
+      -o-clip-path: polygon(50% 0, 100% 100%, 0 100%); */
+    }
+    .canvas__square--back {
+      position: absolute;
+      top: 0;
+      left: 0;
+      
+      z-index: 1;
+      width: 100%;
+      height: 100%;
+      background-color: mediumslateblue;
+      clip-path: polygon(100% 0, 100% 100%, 0 0);
+      /* -webkit-clip-path: polygon(50% 0, 100% 100%, 0 100%);
+      -moz-clip-path: polygon(50% 0, 100% 100%, 0 100%);
+      -ms-clip-path: polygon(50% 0, 100% 100%, 0 100%);
+      -o-clip-path: polygon(50% 0, 100% 100%, 0 100%); */
+    }
+
+    .playback {
+      position: fixed;
+      bottom: 0;
+
+      width: 100vw;
+      height: 10vh;
+    }
+  </style>
+</head>
+<body>
+    <a href="index.html">Back</a>
+
+    <div class="canvas">
+      <div class="canvas__square">
+        <div class="canvas__square--back"></div>
+        <div class="canvas__square--front"></div>
+      </div>
+    </div>
+
+    <div class="playback"></div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.7.0/gsap.min.js"></script>
+  <script>
+    var tlanimation = new TimelineMax();
+
+    tlanimation
+      .to('.canvas__square--front', 2, {
+        rotationX: 180,
+        rotationY: 0,
+        transformOrigin: 'center',
+        force3D: true,
+        transformPerspective: 3000,
+        transformStyle: 'preserve-3d',
+        delay: .2
+      }, 0)
+  </script>
+</body>
+</html>
