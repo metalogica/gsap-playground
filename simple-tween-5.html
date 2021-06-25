@@ -26,7 +26,8 @@
     }
 
     .canvas {
-      border: 1px solid mistyrose;
+      position: relative;
+
       width: 90vw;
       height: 75vh;
       margin: 0 auto;
@@ -36,41 +37,23 @@
       overflow: hidden;
     }
     .canvas__square {
-      position: relative;
-
-      width: 15rem;
-      height: 15rem;
-      border:1px solid black;
+      width: 8rem;
+      height: 8rem;
+      background-color: black;
+      margin: 0;
     }
-    .canvas__square--front {
-      position: absolute;
-      top: 0;
-      left: 0;
-      
-      z-index: 2;
-      width: 100%;
-      height: 100%;
-      background-color: mediumslateblue;
-      clip-path: polygon(0 0, 100% 100%, 0 100%);
-      /* -webkit-clip-path: polygon(50% 0, 100% 100%, 0 100%);
-      -moz-clip-path: polygon(50% 0, 100% 100%, 0 100%);
-      -ms-clip-path: polygon(50% 0, 100% 100%, 0 100%);
-      -o-clip-path: polygon(50% 0, 100% 100%, 0 100%); */
-    }
-    .canvas__square--back {
-      position: absolute;
-      top: 0;
-      left: 0;
-      
+    .canvas__text {
       z-index: 1;
-      width: 100%;
-      height: 100%;
-      background-color: mediumslateblue;
-      clip-path: polygon(100% 0, 100% 100%, 0 0);
-      /* -webkit-clip-path: polygon(50% 0, 100% 100%, 0 100%);
-      -moz-clip-path: polygon(50% 0, 100% 100%, 0 100%);
-      -ms-clip-path: polygon(50% 0, 100% 100%, 0 100%);
-      -o-clip-path: polygon(50% 0, 100% 100%, 0 100%); */
+      color: white;
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+    #startText {
+      opacity: 1;
+    }
+    #endText {
+      opacity: 0;
     }
 
     .playback {
@@ -86,28 +69,59 @@
     <a href="index.html">Back</a>
 
     <div class="canvas">
-      <div class="canvas__square">
-        <div class="canvas__square--back"></div>
-        <div class="canvas__square--front"></div>
-      </div>
+      <h1 id="startText" class="canvas__text">Now you see me...</h1>
+      <h1 id="endText" class="canvas__text">... And now you don't?</h1>
+      <div class="canvas__square"></div>
+      <div class="canvas__square"></div>
+      <div class="canvas__square"></div>
+      <div class="canvas__square"></div>
+      <div class="canvas__square"></div>
+      <div class="canvas__square"></div>
+      <div class="canvas__square"></div>
+      <div class="canvas__square"></div>
+      <div class="canvas__square"></div>
+      <div class="canvas__square"></div>
     </div>
 
     <div class="playback"></div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.7.0/gsap.min.js"></script>
   <script>
-    var tlanimation = new TimelineMax();
+    var tlanimation = new TimelineMax({
+      repeat: -1
+    });
 
     tlanimation
-      .to('.canvas__square--front', 2, {
+
+    tlanimation
+
+    tlanimation
+      .staggerTo('.canvas__square', .75, {
         rotationX: 180,
-        rotationY: 0,
+        rotationY: 180, 
         transformOrigin: 'center',
         force3D: true,
         transformPerspective: 3000,
         transformStyle: 'preserve-3d',
-        delay: .2
-      }, 0)
+        delay: .5,
+        backgroundColor: 'white'
+      }, 0.1)
+      .to('#startText', .01, {
+        opacity: 0
+      }, 'textTransition')
+      .to('#endText', .01, {
+        opacity: 1
+      }, 'textTransition')
+      .staggerTo('.canvas__square', 1, {
+        rotationX: -180,
+        rotationY: -180, 
+        transformOrigin: 'center',
+        force3D: true,
+        transformPerspective: 3000,
+        transformStyle: 'preserve-3d',
+        delay: .5,
+        backgroundColor: 'black'
+      }, -0.1);
   </script>
 </body>
 </html>
