@@ -62,6 +62,25 @@
 
       width: 100vw;
       height: 10vh;
+
+      display: flex;
+      justify-content: space-evenly;
+      border: 1px solid black;
+      align-items: center;
+    }
+
+    .playback__button {
+      padding: .6rem 1.4rem;
+      border-radius: .2rem;
+      border: 1px solid black;
+      transition: all .1s;
+    }
+
+    .playback__button:hover {
+      transition: all .1s;
+      color: white;
+      background-color: black;
+      cursor: pointer;
     }
   </style>
 </head>
@@ -71,7 +90,6 @@
     <div class="canvas">
       <h1 id="startText" class="canvas__text">Now you see me...</h1>
       <h1 id="endText" class="canvas__text">... And now you don't?</h1>
-      <div class="canvas__square"></div>
       <div class="canvas__square"></div>
       <div class="canvas__square"></div>
       <div class="canvas__square"></div>
