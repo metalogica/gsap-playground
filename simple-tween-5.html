@@ -85,34 +85,41 @@
   </style>
 </head>
 <body>
-    <a href="index.html">Back</a>
+  <a href="index.html">Back</a>
 
-    <div class="canvas">
-      <h1 id="startText" class="canvas__text">Now you see me...</h1>
-      <h1 id="endText" class="canvas__text">... And now you don't?</h1>
-      <div class="canvas__square"></div>
-      <div class="canvas__square"></div>
-      <div class="canvas__square"></div>
-      <div class="canvas__square"></div>
-      <div class="canvas__square"></div>
-      <div class="canvas__square"></div>
-      <div class="canvas__square"></div>
-      <div class="canvas__square"></div>
-      <div class="canvas__square"></div>
-    </div>
+  <div class="canvas">
+    <h1 id="startText" class="canvas__text">Now you see me...</h1>
+    <h1 id="endText" class="canvas__text">... And now you don't?</h1>
+    <div class="canvas__square"></div>
+    <div class="canvas__square"></div>
+    <div class="canvas__square"></div>
+    <div class="canvas__square"></div>
+    <div class="canvas__square"></div>
+    <div class="canvas__square"></div>
+    <div class="canvas__square"></div>
+    <div class="canvas__square"></div>
+    <div class="canvas__square"></div>
+  </div>
 
-    <div class="playback">
-      <div class="playback__button" id="play">Play</div>
-      <div class="playback__button" id="pause">Pause</div>
-      <div class="playback__button" id="resume">Resume</div>
-      <div class="playback__button" id="reverse">Reverse</div>
-      <div class="playback__button" id="slow">Slow</div>
-      <div class="playback__button" id="fast">Fast</div>
-      <div class="playback__button" id="seek">Seek</div>
-      <div class="playback__button" id="progress">Progress</div>
-    </div>
+  <div class="playback">
+    <div class="playback__button" id="play">Play</div>
+    <div class="playback__button" id="pause">Pause</div>
+    <div class="playback__button" id="resume">Resume</div>
+    <div class="playback__button" id="reverse">Reverse</div>
+    <div class="playback__button" id="slow">Slow</div>
+    <div class="playback__button" id="fast">Fast</div>
+    <div class="playback__button" id="seek">Seek</div>
+    <div class="playback__button" id="progress">Progress</div>
+  </div>
+
+  <script
+    src="https://code.jquery.com/jquery-3.6.0.min.js"
+    integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
+    crossorigin="anonymous">
+  </script>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.7.0/gsap.min.js"></script>
+  
   <script>
     var tlanimation = new TimelineMax({
       repeat: -1
@@ -145,6 +152,31 @@
         delay: .5,
         backgroundColor: 'black'
       }, -0.1);
+
+    $('#play').click(function() {
+      tlanimation.play();
+    })
+    $('#pause').click(function() {
+      tlanimation.pause();
+    })
+    $('#resume').click(function() {
+      tlanimation.resume();
+    })
+    $('#reverse').click(function() {
+      tlanimation.reverse();
+    })
+    $('#slow').click(function() {
+      tlanimation.timeScale(0.25);
+    })
+    $('#fast').click(function() {
+      tlanimation.timeScale(2);
+    })
+    $('#seek').click(function() {
+      tlanimation.seek(3);
+    })
+    $('#progress').click(function() {
+      tlanimation.progress(0.5);
+    })
   </script>
 </body>
 </html>
