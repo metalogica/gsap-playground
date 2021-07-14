@@ -1,0 +1,67 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tween Playground | Intersection Observer</title>
+
+  <style>
+    body {
+      position: relative;
+      font-family: sans-serif;
+      margin: 0;
+      padding: 0;
+      width: 100vw;
+      height: 100vh;
+    }
+
+    a, a:link, a:visited, a:active {
+      text-decoration: none;
+      color: black;
+      line-height: 2.5em;
+      position: fixed;
+      top: 0;
+      color: white;
+      z-index: 1000;
+    }
+
+    [id^=s] {
+      width: 100vw;
+      height: 100vh;
+
+      background-attachment: fixed;
+      background-size: cover;
+      background-position: center;
+    }
+
+    #s1 {
+      z-index: 0;
+      background-image: url('assets/snake.jpeg');
+    }
+
+    #s2 {
+      background-image: url('assets/antelope.jpeg');
+      z-index: 1;
+    }
+
+    #s3 {
+      z-index: 2;
+      background-image: url('assets/red-panda.jpeg');
+    }
+  </style>
+</head>
+<body>
+  <a href="index.html">Back</a>
+
+  <section id="s1">
+  </section>
+
+  <section id="s2">
+  </section>
+
+  <section id="s3">
+  </section>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.7.0/gsap.min.js"></script>
+</body>
+</html>
