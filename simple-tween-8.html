@@ -79,13 +79,18 @@
         if (!this.clientId) throw new Error('Please provide a valid Client Id.');
         if (!this.clientSecret) throw new Error('Please provide a valid Client Secret.');
 
-
-        this.stage = 1
         // stage 1: unconnected
         // stage 2: headset Connected
         // stage 3: session token acquired
         // stage 4: session active
         // stage 5: streaming mental commands
+        this.stage = 1
+
+        // external function bindings
+        this.neutral = options.neutral || console.log
+        this.lift = options.lift || console.log
+        this.push = options.push || console.log
+        this.pull = options.pull || console.log
         
         this.ws = undefined
         var initSocket = new Promise((resolve, reject) => {
@@ -102,7 +107,7 @@
           cc.ws = ws;
 
           ws.addEventListener('open', function() {
-            cc.conectCortexApi()
+            cc.connectCortexApi()
           });
 
           ws.addEventListener('message', function() {
@@ -111,7 +116,7 @@
         })
       }
       
-      conectCortexApi() {
+      connectCortexApi() {
         this.stage = 1;
         this.ws.send(
           JSON.stringify(
@@ -199,7 +204,11 @@
         var comType = command.com[0];
         var comMagnitude = command.com[1];
 
-        console.log('Type: ', comType, 'Magnitude: ', comMagnitude);
+        // console.log('Type: ', comType, 'Magnitude: ', comMagnitude);
+        if (comType === 'neutral') this.neutral(comMagnitude)
+        if (comType === 'lift') this.lift(comMagnitude)
+        if (comType === 'push') this.push(comMagnitude)
+        if (comType === 'pull') this.pull(comMagnitude)
       }
 
       parse(message) {
@@ -226,18 +235,19 @@
         }
       }
     }
-
    
-    var sttuffToDoWhenLift = function() {};
-    var cc = new CortexClient({ lift: sttuffToDoWhenLift });
+    var stuffToDoWhenLift = function(magnitude) {
+      console.log('IT IS NEUTRAL: Strength is: ', magnitude);
+    };
 
-    // cc.interpret(function(commandType){
-      // do stuff
-    //})
+    var stuffToDoWhenPush = function(magnitude) {
+      console.log('IT IS PUSHING: Strength is: ', magnitude);
+    };
 
-    // cc.interpret(function(commandType){
-      // do stuff
-    //})
+    var cc = new CortexClient({ 
+      neutral: stuffToDoWhenLift,
+      push: stuffToDoWhenPush
+    });
   </script>
 </body>
 </html>
