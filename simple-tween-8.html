@@ -78,10 +78,12 @@
         this.clientId = 'OagQZeyXwrYoSwQt4JGtGL7HX22U2vJQDnpW6sOK';
         this.clientSecret = 'WNhMfomUciXSJovRXPYEnPZrHq5ETDvR73FVSxlBMRHXbrfBm6q0z0W6l07oj7BchXcVmWQ6Yvd31ipR6ybn6lfxx8aNJjcnSNrBa0M5PUuuxC9BvEocGCjdJsG41nv2';
         this.connectionAttempts = 0
+        this.interval = undefined
       }
 
       connect() {
-        var interval = setInterval(() => {
+        this.connectionAttempts = 0;
+        this.interval = setInterval(() => {
           if (this.connectionAttempts < 10) {
             this.wsClient.send(
               JSON.stringify(
@@ -93,11 +95,128 @@
               )
             )
           } else {
-            clearInterval(interval)
+            clearInterval(this.interval)
             alert('Please log into the Cortex API.')
           }
           this.connectionAttempts += 1
-        }, 100);
+        }, 500);
+      }
+
+      connectHeadset() {
+        this.connectionAttempts = 0;
+        this.interval = setInterval(() => {
+          if (this.connectionAttempts < 10) {
+            this.wsClient.send(
+              JSON.stringify(
+                {
+                  "id": 1, 
+                  "jsonrpc": "2.0", 
+                  "method": "queryHeadsets", 
+                  "params": {
+                    "id": "EPOCX-E202014A"
+                  }
+                }
+              )
+            )
+          } else {
+            clearInterval(this.interval)
+            alert('Cannot get cortex info.')
+          }
+          this.connectionAttempts += 1
+        }, 500);
+      }
+
+      getCortexToken() {
+        this.connectionAttempts = 0;
+        this.interval = setInterval(() => {
+          if (this.connectionAttempts < 10) {
+            this.wsClient.send(
+              JSON.stringify(
+                {"id": 1, "jsonrpc": "2.0", "method": "authorize", "params": {"clientId": this.clientId, "clientSecret": this.clientSecret, "debit": 1 }}
+              )
+            )
+          } else {
+            clearInterval(this.interval)
+            alert('Cannot get Cortex Token.')
+          }
+          this.connectionAttempts += 1
+        }, 500);
+      }
+
+      connectSession(token) {
+        this.connectionAttempts = 0;
+        this.interval = setInterval(() => {
+          if (this.connectionAttempts < 10) {
+            this.wsClient.send(
+              JSON.stringify(
+                {"id": 1, "jsonrpc": "2.0", "method": "createSession", "params": {"cortexToken": token, "headset": "EPOCX-E202014A", "status": "active"}}
+              )
+            )
+          } else {
+            clearInterval(this.interval)
+            alert('Cannot create session.')
+          }
+          this.connectionAttempts += 1
+        }, 500);
+      }
+
+      streamMentalCommand(token, session) {
+        this.connectionAttempts = 0;
+        this.interval = setInterval(() => {
+          if (this.connectionAttempts < 10) {
+            this.wsClient.send(
+              JSON.stringify(
+                {"id": 1, "jsonrpc": "2.0", "method": "subscribe", "params": {"cortexToken": token, "session": session, "streams": ["com"]}}
+              )
+            )
+          } else {
+            clearInterval(this.interval)
+            alert('Cannot stream command')
+          }
+          this.connectionAttempts += 1
+        }, 500);
+      }
+
+      parse(message) {
+        console.log(message)
+        var { result } = JSON.parse(message);
+        if (!result) return;
+        // console.log(result);
+        // if (!result) throw new Error('An unexpected error occured with the ws:// connection.')
+
+        // stage 1: checking if cortex api is available
+        var username = result[0]?.username;
+        if (username) {
+          clearInterval(this.interval)
+          console.log(username)
+          this.connectHeadset();
+        }
+
+        // stage 2: conecting headset
+        var headset = result[0]?.status;
+        if (headset === 'connected') { 
+          clearInterval(this.interval);
+          console.log('headset connected.');
+          this.getCortexToken();
+        }
+
+        // stage 3: get cortex token for session
+        if (!this.token) this.token = result.cortexToken;
+        if (this.token) {
+          clearInterval(this.interval);
+          console.log('Cortex token acquired: ', this.token);
+          this.connectSession(this.token);
+        }
+
+        // stage 4: get mental commands
+        if (!this.session) this.session = result.id;
+        if (this.session) {
+          clearInterval(this.interval);
+          console.log('session activated: ', this.session);
+          this.streamMentalCommand(this.token, this.session);
+        }
+
+        // stage 5: output / interpret mental commands
       }
     }
 
@@ -105,12 +224,20 @@
     var cc = new CortexClient(ws);
 
     ws.addEventListener('open', function (event) {
-      cc.connect()
+      cc.connect();
     });   
 
     ws.addEventListener('message', function (event) {
-      console.log('Message from server ', event.data);
+      cc.parse(event.data)
     });
+
+    // cc.interpret(function(commandType){
+      // do stuff
+    //})
+
+    // cc.interpret(function(commandType){
+      // do stuff
+    //})
   </script>
 </body>
 </html>
