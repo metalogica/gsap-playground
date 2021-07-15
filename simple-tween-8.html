@@ -178,26 +178,36 @@
       }
 
       parse(message) {
-        console.log(message)
-        var { result } = JSON.parse(message);
-        if (!result) return;
+        // if (!result) return;
         // console.log(result);
         // if (!result) throw new Error('An unexpected error occured with the ws:// connection.')
-
+        
         // stage 1: checking if cortex api is available
-        var username = result[0]?.username;
-        if (username) {
-          clearInterval(this.interval)
-          console.log(username)
-          this.connectHeadset();
+        var { result } = JSON.parse(message);
+        if (result) {
+          var username = result[0]?.username;
+          if (username) {
+            clearInterval(this.interval)
+            console.log(username)
+            this.connectHeadset();
+          }
+          // stage 2: conecting headset
+          var headset = result[0]?.status;
+          if (headset === 'connected') { 
+            clearInterval(this.interval);
+            console.log('headset connected.');
+            this.getCortexToken();
+          }
         }
 
-        // stage 2: conecting headset
-        var headset = result[0]?.status;
-        if (headset === 'connected') { 
-          clearInterval(this.interval);
-          console.log('headset connected.');
-          this.getCortexToken();
+        // stage 5: output / interpret mental commands
+        var command = JSON.parse(message);
+        if (command.com) {
+          if (this.interval) clearInterval(this.interval);
+
+          var comType = command.com[0];
+          var comMagnitude = command.com[1];
+          console.log('Type: ', comType, 'Magnitude: ', comMagnitude);
         }
 
         // stage 3: get cortex token for session
@@ -215,13 +225,12 @@
           console.log('session activated: ', this.session);
           this.streamMentalCommand(this.token, this.session);
         }
-
-        // stage 5: output / interpret mental commands
       }
     }
 
     var ws = new WebSocket('wss://localhost:6868');
-    var cc = new CortexClient(ws);
+    var sttuffToDoWhenLift = function() {};
+    var cc = new CortexClient(ws, { lift: sttuffToDoWhenLift });
 
     ws.addEventListener('open', function (event) {
       cc.connect();
