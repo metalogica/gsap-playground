@@ -28,6 +28,7 @@
     [id^=s] {
       width: 100vw;
       height: 100vh;
+      position: relative;
 
       background-attachment: fixed;
       background-size: cover;
@@ -48,18 +49,64 @@
       z-index: 2;
       background-image: url('assets/red-panda.jpeg');
     }
+    
+    [id^=s] > h2 {
+      position: absolute;
+      display: inline-block;
+      
+      font-size: 3.5rem;
+      background-clip: text;
+      -webkit-background-clip: text;
+      -moz-background-clip: text;
+      -moz-background-clip: text;
+      -o-background-clip: text;
+      color: transparent;
+      text-transform: uppercase;
+      letter-spacing: 1rem;
+      font-weight: 900;
+    }
+
+    .s1__header {
+      background-image: linear-gradient(270deg, #C4FCEF 0%, #008F7A 100%);
+      right: 5%;
+      top: 5%;
+      text-align: right;
+    }
+
+    .s2__header {
+      background-image: linear-gradient(270deg, #FFE6D6 0%, #AA6F5A 100%);
+      left: 5%;
+      bottom: 25%;
+      text-align: left;
+    }
+
+    .s3__header {
+      background-image: linear-gradient(270deg, #FF9671 0%, #C55065 100%);
+      right: 5%;
+      bottom: 5%;
+      text-align: right;
+    }
   </style>
 </head>
 <body>
   <a href="index.html">Back</a>
 
   <section id="s1">
+    <h2 class="s1__header">
+      This is a Snake
+    </h2>
   </section>
 
   <section id="s2">
+    <h2 class="s2__header">
+      This is an Antelope
+    </h2>
   </section>
 
   <section id="s3">
+    <h2 class="s3__header">
+      This is a Red Panda
+    </h2>
   </section>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.7.0/gsap.min.js"></script>
