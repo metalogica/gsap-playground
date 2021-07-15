@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tween Playground | Mind-Enabled Tween</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      margin: 0;
+      padding: 0;
+      width: 100vw;
+      height: 100vh;
+    }
+
+    a, a:link, a:visited, a:active {
+      text-decoration: none;
+      color: black;
+      line-height: 2.5em;
+    }
+
+    a:hover {
+      color: rgba(0,0,0,0.5);
+    }
+
+    .circle {
+      position: absolute;
+      top: 25%;
+      left: 25%;
+
+      background-color: red;
+      height: 150px;
+      width: 150px;
+      border-radius: 50%;
+    }
+
+    .square {
+      position: absolute;
+      top: 25%;
+      left: 25%;
+
+      background-color: green;
+      height: 150px;
+      width: 150px;
+    }
+  </style>
+</head>
+<body>
+    <a href="index.html">Back</a>
+
+    <div class="circle"></div>
+    <div class="square"></div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.7.0/gsap.min.js"></script>
+  <script>
+    var circleTween = {
+      x: 150,
+      backgroundColor: 'blue'
+    };
+    
+    var squareTween = {
+      x: -150,
+      y: -150,
+      scale: 2,
+      delay: 0,
+      ease: Back.easeOut
+    }
+    
+    TweenMax.to('.circle', 1, circleTween);
+    TweenMax.to('.square', 20, squareTween);
+  </script>
+
+  <script>
+    class CortexClient {
+      constructor(wsClient, options = {}) {
+        this.wsClient = wsClient
+        this.clientId = 'OagQZeyXwrYoSwQt4JGtGL7HX22U2vJQDnpW6sOK';
+        this.clientSecret = 'WNhMfomUciXSJovRXPYEnPZrHq5ETDvR73FVSxlBMRHXbrfBm6q0z0W6l07oj7BchXcVmWQ6Yvd31ipR6ybn6lfxx8aNJjcnSNrBa0M5PUuuxC9BvEocGCjdJsG41nv2';
+        this.connectionAttempts = 0
+      }
+
+      connect() {
+        var interval = setInterval(() => {
+          if (this.connectionAttempts < 10) {
+            this.wsClient.send(
+              JSON.stringify(
+                {
+                  "id": "1", 
+                  "jsonrpc": "2.0", 
+                  "method": "getUserLogin"
+                }
+              )
+            )
+          } else {
+            clearInterval(interval)
+            alert('Please log into the Cortex API.')
+          }
+          this.connectionAttempts += 1
+        }, 100);
+      }
+    }
+
+    var ws = new WebSocket('wss://localhost:6868');
+    var cc = new CortexClient(ws);
+
+    ws.addEventListener('open', function (event) {
+      cc.connect()
+    });   
+
+    ws.addEventListener('message', function (event) {
+      console.log('Message from server ', event.data);
+    });
+  </script>
+</body>
+</html>
