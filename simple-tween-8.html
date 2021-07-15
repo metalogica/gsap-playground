@@ -30,8 +30,8 @@
       left: 25%;
 
       background-color: red;
-      height: 150px;
-      width: 150px;
+      height: 15px;
+      width: 10px;
       border-radius: 50%;
     }
 
@@ -41,8 +41,8 @@
       left: 25%;
 
       background-color: green;
-      height: 150px;
-      width: 150px;
+      height: 15px;
+      width: 15px;
     }
   </style>
 </head>
@@ -51,6 +51,7 @@
 
     <div class="circle"></div>
     <div class="square"></div>
+    <p id='neutralText' style='font-size: 5rem'></p>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.7.0/gsap.min.js"></script>
   <script>
@@ -202,6 +203,9 @@
       // stage 5: streaming mental commands
       interpretCommand(message) {
         var command = JSON.parse(message);
+        // workaround for a bug in Emotiv API itself; stops us seeing a useless warning message.
+        if (!command.com) return 
+
         var comType = command.com[0];
         var comMagnitude = command.com[1];
 
@@ -237,8 +241,11 @@
       }
     }
    
-    var stuffToDoWhenLift = function(magnitude) {
+
+    var text = document.getElementById('neutralText');
+    var stuffToDoWhenNeutral = function(magnitude) {
       console.log('IT IS NEUTRAL: Strength is: ', magnitude);
+      neutralText.innerHTML = 'Neutral: ' + magnitude;
     };
 
     var stuffToDoWhenPush = function(magnitude) {
@@ -246,9 +253,12 @@
     };
 
     var cc = new CortexClient({ 
-      neutral: stuffToDoWhenLift,
-      push: stuffToDoWhenPush
+      neutral: stuffToDoWhenNeutral,
+      push: stuffToDoWhenPush,
+      visible: true
     });
+    
+    // cc.render()
   </script>
 </body>
 </html>
