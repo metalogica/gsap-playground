@@ -76,10 +76,18 @@
       constructor(options = {}) {
         this.clientId = 'OagQZeyXwrYoSwQt4JGtGL7HX22U2vJQDnpW6sOK';
         this.clientSecret = 'WNhMfomUciXSJovRXPYEnPZrHq5ETDvR73FVSxlBMRHXbrfBm6q0z0W6l07oj7BchXcVmWQ6Yvd31ipR6ybn6lfxx8aNJjcnSNrBa0M5PUuuxC9BvEocGCjdJsG41nv2';
-        this.connectionAttempts = 0
-        this.interval = undefined
-        this.ws = undefined
+        if (!this.clientId) throw new Error('Please provide a valid Client Id.');
+        if (!this.clientSecret) throw new Error('Please provide a valid Client Secret.');
+
+
+        this.stage = 1
+        // stage 1: unconnected
+        // stage 2: headset Connected
+        // stage 3: session token acquired
+        // stage 4: session active
+        // stage 5: streaming mental commands
         
+        this.ws = undefined
         var initSocket = new Promise((resolve, reject) => {
           var ws = new WebSocket('wss://localhost:6868');
           if (ws) {
@@ -94,7 +102,7 @@
           cc.ws = ws;
 
           ws.addEventListener('open', function() {
-            cc.connect()
+            cc.conectCortexApi()
           });
 
           ws.addEventListener('message', function() {
@@ -103,149 +111,118 @@
         })
       }
       
-      connect() {
-        this.connectionAttempts = 0;
-        this.interval = setInterval(() => {
-          if (this.connectionAttempts < 10) {
-            this.ws.send(
-              JSON.stringify(
-                {
-                  "id": "1", 
-                  "jsonrpc": "2.0", 
-                  "method": "getUserLogin"
-                }
-              )
-            )
-          } else {
-            clearInterval(this.interval)
-            alert('Please log into the Cortex API.')
-          }
-          this.connectionAttempts += 1
-        }, 1000);
+      conectCortexApi() {
+        this.stage = 1;
+        this.ws.send(
+          JSON.stringify(
+            {
+              "id": "1", 
+              "jsonrpc": "2.0", 
+              "method": "getUserLogin"
+            }
+          )
+        )
       }
 
-      connectHeadset() {
-        this.connectionAttempts = 0;
-        this.interval = setInterval(() => {
-          if (this.connectionAttempts < 10) {
-            this.ws.send(
-              JSON.stringify(
-                {
-                  "id": 1, 
-                  "jsonrpc": "2.0", 
-                  "method": "queryHeadsets", 
-                  "params": {
-                    "id": "EPOCX-E202014A"
-                  }
-                }
-              )
-            )
-          } else {
-            clearInterval(this.interval)
-            alert('Cannot get cortex info.')
-          }
-          this.connectionAttempts += 1
-        }, 1000);
+      // stage 1: Cortex API not connected
+      connectHeadset(message) {
+        this.stage = 2;
+
+        var { result } = JSON.parse(message);
+        var username = result[0]?.username;
+        console.log('1/5: Connected to Cortex API. Username is: ', username);
+        
+        this.ws.send(
+          JSON.stringify(
+            {
+              "id": 1, 
+              "jsonrpc": "2.0", 
+              "method": "queryHeadsets", 
+              "params": {
+                "id": "EPOCX-E202014A"
+              }
+            }
+          )
+        )
       }
 
-      getCortexToken() {
-        this.connectionAttempts = 0;
-        this.interval = setInterval(() => {
-          if (this.connectionAttempts < 10) {
-            this.ws.send(
-              JSON.stringify(
-                {"id": 1, "jsonrpc": "2.0", "method": "authorize", "params": {"clientId": this.clientId, "clientSecret": this.clientSecret, "debit": 1 }}
-              )
-            )
-          } else {
-            clearInterval(this.interval)
-            alert('Cannot get Cortex Token.')
-          }
-          this.connectionAttempts += 1
-        }, 1000);
+      // stage 2: headset Connected
+      getCortexToken(message) {
+        this.stage = 3;
+
+        var { result } = JSON.parse(message);
+        var headset = result[0]?.status;
+        console.log('2/5: Headset connected: ', headset);
+        
+        this.ws.send(
+          JSON.stringify(
+            {"id": 1, "jsonrpc": "2.0", "method": "authorize", "params": {"clientId": this.clientId, "clientSecret": this.clientSecret, "debit": 1 }}
+          )
+        )
       }
 
-      connectSession(token) {
-        this.connectionAttempts = 0;
-        this.interval = setInterval(() => {
-          if (this.connectionAttempts < 10) {
-            this.ws.send(
-              JSON.stringify(
-                {"id": 1, "jsonrpc": "2.0", "method": "createSession", "params": {"cortexToken": token, "headset": "EPOCX-E202014A", "status": "active"}}
-              )
-            )
-          } else {
-            clearInterval(this.interval)
-            alert('Cannot create session.')
-          }
-          this.connectionAttempts += 1
-        }, 1000);
+      // stage 3: session token acquired
+      connectSession(message) {
+        this.stage = 4;
+
+        var { result } = JSON.parse(message);
+        this.token = result.cortexToken;
+        console.log('3/5: Cortex token acquired: ', this.token);
+
+        this.ws.send(
+          JSON.stringify(
+            {"id": 1, "jsonrpc": "2.0", "method": "createSession", "params": {"cortexToken": this.token, "headset": "EPOCX-E202014A", "status": "active"}}
+          )
+        )
       }
 
-      streamMentalCommand(token, session) {
-        this.connectionAttempts = 0;
-        this.interval = setInterval(() => {
-          if (this.connectionAttempts < 10) {
-            this.ws.send(
-              JSON.stringify(
-                {"id": 1, "jsonrpc": "2.0", "method": "subscribe", "params": {"cortexToken": token, "session": session, "streams": ["com"]}}
-              )
-            )
-          } else {
-            clearInterval(this.interval)
-            alert('Cannot establish mental command stream.')
-          }
-          this.connectionAttempts += 1
-        }, 1000);
+      // stage 4: session active
+      streamMentalCommand(message) {
+        this.stage = 5;
+
+        var { result } = JSON.parse(message);
+        this.session = result.id;
+        console.log('4/5: Session activated: ', this.session);
+
+        this.ws.send(
+          JSON.stringify(
+            {"id": 1, "jsonrpc": "2.0", "method": "subscribe", "params": {"cortexToken": this.token, "session": this.session, "streams": ["com"]}}
+          )
+        )
+
+        console.log('5/5: Strating mental command stream!');
+      }
+
+      // stage 5: streaming mental commands
+      interpretCommand(message) {
+        var command = JSON.parse(message);
+        var comType = command.com[0];
+        var comMagnitude = command.com[1];
+
+        console.log('Type: ', comType, 'Magnitude: ', comMagnitude);
       }
 
       parse(message) {
-        // if (!result) return;
-        // console.log(result);
-        // if (!result) throw new Error('An unexpected error occured with the ws:// connection.')
-        
-        // stage 1: checking if cortex api is available
-        var { result } = JSON.parse(message);
-        if (result) {
-          var username = result[0]?.username;
-          if (username) {
-            clearInterval(this.interval)
-            console.log(username)
-            this.connectHeadset();
-          }
-          // stage 2: conecting headset
-          var headset = result[0]?.status;
-          if (headset === 'connected') { 
-            clearInterval(this.interval);
-            console.log('headset connected.');
-            this.getCortexToken();
-          }
-        }
+        if (this.stage === 1) {
+          // stage 1: connecting headset
+          this.connectHeadset(message);
 
-        // stage 5: output / interpret mental commands
-        var command = JSON.parse(message);
-        if (command.com) {
-          clearInterval(this.interval);
+        } else if (this.stage === 2) {
+          // stage 2: getting session token
+          this.getCortexToken(message);
 
-          var comType = command.com[0];
-          var comMagnitude = command.com[1];
-          console.log('Type: ', comType, 'Magnitude: ', comMagnitude);
-        }
+        } else if (this.stage === 3) {
+          // stage 3: connecting to session
+          this.connectSession(message);
 
-        // stage 3: get cortex token for session
-        if (!this.token) this.token = result.cortexToken;
-        if (this.token) {
-          clearInterval(this.interval);
-          console.log('Cortex token acquired: ', this.token);
-          this.connectSession(this.token);
-        }
+        } else if (this.stage === 4) {
+          // stage 4: establish mental command stream
+          this.streamMentalCommand(message);
 
-        // stage 4: get mental commands
-        if (!this.session) this.session = result.id;
-        if (this.session) {
-          clearInterval(this.interval);
-          console.log('session activated: ', this.session);
-          this.streamMentalCommand(this.token, this.session);
+        } else if (this.stage === 5) {
+          // stage 5: output / interpret mental commands
+          this.interpretCommand(message)
+
         }
       }
     }
