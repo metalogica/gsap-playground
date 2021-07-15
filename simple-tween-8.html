@@ -92,6 +92,7 @@
         this.push = options.push || console.log
         this.pull = options.pull || console.log
         
+        // establish ws connection to desktop Cortex App
         this.ws = undefined
         var initSocket = new Promise((resolve, reject) => {
           var ws = new WebSocket('wss://localhost:6868');
