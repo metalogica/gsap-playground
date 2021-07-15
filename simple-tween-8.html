@@ -109,26 +109,21 @@
           cc.ws = ws;
 
           ws.addEventListener('open', function() {
-            cc.connectCortexApi()
+            ws.send(
+              JSON.stringify(
+                {
+                  "id": "1", 
+                  "jsonrpc": "2.0", 
+                  "method": "getUserLogin"
+                }
+              )
+            )
           });
 
           ws.addEventListener('message', function() {
             cc.parse(event.data)
           });
         })
-      }
-      
-      connectCortexApi() {
-        this.stage = 1;
-        this.ws.send(
-          JSON.stringify(
-            {
-              "id": "1", 
-              "jsonrpc": "2.0", 
-              "method": "getUserLogin"
-            }
-          )
-        )
       }
 
       // stage 1: Cortex API not connected
