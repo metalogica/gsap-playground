@@ -73,19 +73,41 @@
 
   <script>
     class CortexClient {
-      constructor(wsClient, options = {}) {
-        this.wsClient = wsClient
+      constructor(options = {}) {
         this.clientId = 'OagQZeyXwrYoSwQt4JGtGL7HX22U2vJQDnpW6sOK';
         this.clientSecret = 'WNhMfomUciXSJovRXPYEnPZrHq5ETDvR73FVSxlBMRHXbrfBm6q0z0W6l07oj7BchXcVmWQ6Yvd31ipR6ybn6lfxx8aNJjcnSNrBa0M5PUuuxC9BvEocGCjdJsG41nv2';
         this.connectionAttempts = 0
         this.interval = undefined
-      }
+        this.ws = undefined
+        
+        var initSocket = new Promise((resolve, reject) => {
+          var ws = new WebSocket('wss://localhost:6868');
+          if (ws) {
+            resolve(ws)
+          } else {
+            throw new Error('Please start the Emotiv Cortex desktop application.')
+          }
+        })
+        
+        initSocket.then((ws) => {
+          var cc = this;
+          cc.ws = ws;
 
+          ws.addEventListener('open', function() {
+            cc.connect()
+          });
+
+          ws.addEventListener('message', function() {
+            cc.parse(event.data)
+          });
+        })
+      }
+      
       connect() {
         this.connectionAttempts = 0;
         this.interval = setInterval(() => {
           if (this.connectionAttempts < 10) {
-            this.wsClient.send(
+            this.ws.send(
               JSON.stringify(
                 {
                   "id": "1", 
@@ -99,14 +121,14 @@
             alert('Please log into the Cortex API.')
           }
           this.connectionAttempts += 1
-        }, 500);
+        }, 1000);
       }
 
       connectHeadset() {
         this.connectionAttempts = 0;
         this.interval = setInterval(() => {
           if (this.connectionAttempts < 10) {
-            this.wsClient.send(
+            this.ws.send(
               JSON.stringify(
                 {
                   "id": 1, 
@@ -123,14 +145,14 @@
             alert('Cannot get cortex info.')
           }
           this.connectionAttempts += 1
-        }, 500);
+        }, 1000);
       }
 
       getCortexToken() {
         this.connectionAttempts = 0;
         this.interval = setInterval(() => {
           if (this.connectionAttempts < 10) {
-            this.wsClient.send(
+            this.ws.send(
               JSON.stringify(
                 {"id": 1, "jsonrpc": "2.0", "method": "authorize", "params": {"clientId": this.clientId, "clientSecret": this.clientSecret, "debit": 1 }}
               )
@@ -140,14 +162,14 @@
             alert('Cannot get Cortex Token.')
           }
           this.connectionAttempts += 1
-        }, 500);
+        }, 1000);
       }
 
       connectSession(token) {
         this.connectionAttempts = 0;
         this.interval = setInterval(() => {
           if (this.connectionAttempts < 10) {
-            this.wsClient.send(
+            this.ws.send(
               JSON.stringify(
                 {"id": 1, "jsonrpc": "2.0", "method": "createSession", "params": {"cortexToken": token, "headset": "EPOCX-E202014A", "status": "active"}}
               )
@@ -157,24 +179,24 @@
             alert('Cannot create session.')
           }
           this.connectionAttempts += 1
-        }, 500);
+        }, 1000);
       }
 
       streamMentalCommand(token, session) {
         this.connectionAttempts = 0;
         this.interval = setInterval(() => {
           if (this.connectionAttempts < 10) {
-            this.wsClient.send(
+            this.ws.send(
               JSON.stringify(
                 {"id": 1, "jsonrpc": "2.0", "method": "subscribe", "params": {"cortexToken": token, "session": session, "streams": ["com"]}}
               )
             )
           } else {
             clearInterval(this.interval)
-            alert('Cannot stream command')
+            alert('Cannot establish mental command stream.')
           }
           this.connectionAttempts += 1
-        }, 500);
+        }, 1000);
       }
 
       parse(message) {
@@ -203,7 +225,7 @@
         // stage 5: output / interpret mental commands
         var command = JSON.parse(message);
         if (command.com) {
-          if (this.interval) clearInterval(this.interval);
+          clearInterval(this.interval);
 
           var comType = command.com[0];
           var comMagnitude = command.com[1];
@@ -228,17 +250,9 @@
       }
     }
 
-    var ws = new WebSocket('wss://localhost:6868');
+   
     var sttuffToDoWhenLift = function() {};
-    var cc = new CortexClient(ws, { lift: sttuffToDoWhenLift });
-
-    ws.addEventListener('open', function (event) {
-      cc.connect();
-    });   
-
-    ws.addEventListener('message', function (event) {
-      cc.parse(event.data)
-    });
+    var cc = new CortexClient({ lift: sttuffToDoWhenLift });
 
     // cc.interpret(function(commandType){
       // do stuff
