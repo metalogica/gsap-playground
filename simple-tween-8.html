@@ -234,9 +234,12 @@
 
         }
       }
+      
+      render() {
+        console.log('renders into the DOM')
+      }
     }
    
-
     var text = document.getElementById('neutralText');
     var stuffToDoWhenNeutral = function(magnitude) {
       console.log('IT IS NEUTRAL: Strength is: ', magnitude);
@@ -251,7 +254,7 @@
       neutral: stuffToDoWhenNeutral,
       push: stuffToDoWhenPush,
       visible: true
-    });
+    }).render();
     
     // cc.render()
   </script>
