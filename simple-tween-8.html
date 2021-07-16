@@ -110,13 +110,7 @@
 
           ws.addEventListener('open', function() {
             ws.send(
-              JSON.stringify(
-                {
-                  "id": "1", 
-                  "jsonrpc": "2.0", 
-                  "method": "getUserLogin"
-                }
-              )
+              JSON.stringify({"id": "1", "jsonrpc": "2.0", "method": "getUserLogin"})
             )
           });
 
@@ -211,8 +205,14 @@
         if (comType === 'pull') this.pull(comMagnitude)
       }
 
+
       parse(message) {
-        if (this.stage === 1) {
+        var error = JSON.parse(message).error
+
+        if (error) {
+          throw new Error(error.message);
+          
+        } else if (this.stage === 1) {
           // stage 1: connecting headset
           this.connectHeadset(message);
 
