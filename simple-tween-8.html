@@ -35,14 +35,31 @@
       border-radius: 50%;
     }
 
-    .square {
-      position: absolute;
-      top: 25%;
-      left: 25%;
+    [class^=cortex-client] {
+      background-color: black;
+      color: white;
+      text-align: center;
+    }
 
-      background-color: green;
-      height: 15px;
-      width: 15px;
+    .cortex-client-icon {
+      position: fixed;
+      top: 5%;
+      right: 5%;
+      width: 50px;
+      height: 50px;
+
+      border-radius: 100%;
+      box-shadow: 3px 3px 8px rgba(0,0,0,.3);
+    }
+
+    .cortex-client-dashboard {
+      padding: 200px;
+      position: fixed;
+      width: 40%;
+      height: 20%;
+
+      text-align: center;
+      visibility: hidden;
     }
   </style>
 </head>
@@ -59,17 +76,8 @@
       x: 150,
       backgroundColor: 'blue'
     };
-    
-    var squareTween = {
-      x: -150,
-      y: -150,
-      scale: 2,
-      delay: 0,
-      ease: Back.easeOut
-    }
-    
+  
     TweenMax.to('.circle', 1, circleTween);
-    TweenMax.to('.square', 20, squareTween);
   </script>
 
   <script>
@@ -236,7 +244,18 @@
       }
       
       render() {
-        console.log('renders into the DOM')
+        var body = document.querySelector('body');
+
+        var icon = document.createElement('div');
+        icon.classList.add('cortex-client-icon');
+        icon.innerHTML = 'CC';
+        
+        var dashboard = document.createElement('div');
+        dashboard.classList.add('cortex-client-dashboard');
+        dashboard.innerHTML = 'Dashboard';
+        
+        body.appendChild(icon);
+        body.appendChild(dashboard);
       }
     }
    
