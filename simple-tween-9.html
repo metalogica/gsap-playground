@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tween Playground | ThreeJS Tween</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      margin: 0;
+      padding: 0;
+      width: 100vw;
+      height: 100vh;
+    }
+
+    a, a:link, a:visited, a:active {
+      text-decoration: none;
+      color: black;
+      line-height: 2.5em;
+    }
+
+    a:hover {
+      color: rgba(0,0,0,0.5);
+    }
+
+  </style>
+</head>
+<body>
+  <a href="index.html">Back</a>
+
+  <section></section>
+
+  <script src="three.js"></script>
+  <script>
+    var renderer = new THREE.WebGLRenderer({
+      antialias: true
+    });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(window.devicePixelRatio);
+    renderer.setClearColor(0x333333, 1);
+
+    var section = document.querySelector('section')
+    section.appendChild(renderer.domElement);
+
+    var scene = new THREE.Scene();
+    
+    var camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 5000);
+    camera.position.z = -50;
+    camera.lookAt(scene.position);
+
+
+
+
+
+
+
+
+    var light = new THREE.DirectionalLight(0xffffff, 1);
+    light.position.set(0, 0, -1);
+    scene.add(light);
+
+
+
+    var shapes = [];
+    console.log(shapes)
+
+    function createShape(x, y) {
+      var geometry = new THREE.ConeGeometry(10, 15, 32);
+      var material = new THREE.MeshLambertMaterial({
+        color: 0xcccccc,
+        // shaded color / color of area with no light
+        emissive: 0xff0000
+      });
+      var shape = new THREE.Mesh(geometry, material);
+    
+
+      shape.position.set(
+        (window.innerWidth / 2) - x, 
+        (window.innerHeight / 2) - y,
+        400
+      );
+      shape.rotateX(0.5);
+      shape.rotateZ(0.5);
+      
+      scene.add(shape);
+      shapes.push(shape);
+    }
+    
+    createShape(0,0);
+
+  
+
+
+
+
+    function animate() {
+      renderer.render(scene, camera);
+      requestAnimationFrame(animate);
+
+      shapes.forEach(function(shape) {
+        shape.rotateX(0.01)
+      })
+    }
+    
+    animate();
+
+    // document.addEventListener('click', function(event) {
+    //   createShape(event.pageX, event.pageY);
+    // });
+
+    var isMouseDown = false;
+    window.addEventListener('mousemove', function(event) {
+      if (isMouseDown) createShape(event.pageX, event.pageY);
+    });
+    window.addEventListener('mousedown', function() {
+      isMouseDown = true
+    });
+    window.addEventListener('mouseup', function() {
+      isMouseDown = false
+    });
+  </script>
+</body>
+</html>
