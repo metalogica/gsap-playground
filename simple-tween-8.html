@@ -103,6 +103,7 @@
 
         // Start Cortex Mock WS:// -- download from: https://github.com/metalogica/cortex-mock
         this.dev = false
+        this.magnitude = 0.0
         
         // establish ws connection to desktop Cortex App
         this.ws = undefined
@@ -262,10 +263,26 @@
         body.appendChild(dashboard);
       }
 
-      simulateMentalCommand() {
+      accelerateMockMentalCommand() {
+        if (this.magnitude < 100) this.magnitude += 0.5
         this.ws.send(JSON.stringify({
           type : 'neutral', 
-          magnitude: 50
+          magnitude: this.magnitude
+        }))
+      }
+
+      sustainMockMentalCommand() {
+        this.ws.send(JSON.stringify({
+          type : 'neutral', 
+          magnitude: this.magnitude
+        }))
+      }
+
+      decelerateMockMentalCommand() {
+        if (this.magnitude >= 0) this.magnitude -= 0.5
+        this.ws.send(JSON.stringify({
+          type : 'neutral', 
+          magnitude: this.magnitude
         }))
       }
     }
@@ -290,9 +307,9 @@
     
     // cc.render()
     document.addEventListener('keydown', function(event){
-      if (!event.keyCode === 81) return;
-
-      cc.simulateMentalCommand();
+      if (event.keyCode === 81) { cc.accelerateMockMentalCommand(); }
+      else if (event.keyCode === 87) { cc.sustainMockMentalCommand(); }
+      else if (event.keyCode === 69) { cc.decelerateMockMentalCommand(); }
     });
   </script>
 </body>
