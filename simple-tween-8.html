@@ -100,11 +100,15 @@
         this.lift = options.lift || console.log
         this.push = options.push || console.log
         this.pull = options.pull || console.log
+
+        // Start Cortex Mock WS:// -- download from: https://github.com/metalogica/cortex-mock
+        this.dev = false
         
         // establish ws connection to desktop Cortex App
         this.ws = undefined
         var initSocket = new Promise((resolve, reject) => {
-          var ws = new WebSocket('wss://localhost:6868');
+          var url = this.dev ? 'wss://localhost:6868' : 'ws://localhost:4242'
+          var ws = new WebSocket(url);
           if (ws) {
             resolve(ws)
           } else {
@@ -257,6 +261,13 @@
         body.appendChild(icon);
         body.appendChild(dashboard);
       }
+
+      simulateMentalCommand() {
+        this.ws.send(JSON.stringify({
+          type : 'neutral', 
+          magnitude: 50
+        }))
+      }
     }
    
     var text = document.getElementById('neutralText');
@@ -272,10 +283,17 @@
     var cc = new CortexClient({ 
       neutral: stuffToDoWhenNeutral,
       push: stuffToDoWhenPush,
-      visible: true
-    }).render();
+      visible: true,
+      dev: true
+    })
+    cc.render();
     
     // cc.render()
+    document.addEventListener('keydown', function(event){
+      if (!event.keyCode === 81) return;
+
+      cc.simulateMentalCommand();
+    });
   </script>
 </body>
 </html>
