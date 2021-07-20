@@ -65,10 +65,20 @@
     var shapes = [];
     console.log(shapes)
 
-    var hue = 0
+    var hue = 0;
+    var geometries = [
+      new THREE.ConeGeometry(10, 20, 30),
+      new THREE.BoxGeometry(15, 15, 15),
+      new THREE.TorusGeometry(5, 3, 16, 100),
+      new THREE.SphereGeometry(5, 32, 32),
+    ];
     function createShape(x, y) {
+      var rand = Math.floor(Math.random() * geometries.length);
+      // Deal with the edge-case where randint is equal to array length
+      var geometry = geometries[rand - 1];
+
+
       hue += 10;
-      var geometry = new THREE.ConeGeometry(10, 15, 32);
       var emissiveColor = new THREE.Color("hsl(" + hue + ", 100%, 50%)");
       var material = new THREE.MeshLambertMaterial({
         color: 0xcccccc,
