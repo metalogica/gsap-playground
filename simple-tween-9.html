@@ -65,12 +65,15 @@
     var shapes = [];
     console.log(shapes)
 
+    var hue = 0
     function createShape(x, y) {
+      hue += 10;
       var geometry = new THREE.ConeGeometry(10, 15, 32);
+      var emissiveColor = new THREE.Color("hsl(" + hue + ", 100%, 50%)");
       var material = new THREE.MeshLambertMaterial({
         color: 0xcccccc,
         // shaded color / color of area with no light
-        emissive: 0xff0000
+        emissive: emissiveColor
       });
       var shape = new THREE.Mesh(geometry, material);
     
