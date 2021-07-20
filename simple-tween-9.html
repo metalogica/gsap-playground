@@ -63,7 +63,6 @@
 
 
     var shapes = [];
-    console.log(shapes)
 
     var hue = 0;
     var geometries = [
@@ -91,7 +90,7 @@
       shape.position.set(
         (window.innerWidth / 2) - x, 
         (window.innerHeight / 2) - y,
-        400
+        camera.position.z + 500
       );
       shape.rotateX(0.5);
       shape.rotateZ(0.5);
@@ -111,8 +110,10 @@
       renderer.render(scene, camera);
       requestAnimationFrame(animate);
 
+      camera.position.setZ(camera.position.z + 1)
+
       shapes.forEach(function(shape) {
-        shape.rotateX(0.01)
+        shape.rotateX(0.01);
       })
     }
     
