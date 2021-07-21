@@ -150,6 +150,15 @@
     window.addEventListener('touchend', function() {
       isMouseDown = false
     });
+
+    window.addEventListener('resize', function(){
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      renderer.setPixelRatio(window.devicePixelRatio);
+
+      camera.aspect = window.innerWidth / window.innerHeight;
+      // required each time the camera is updated: https://threejs.org/docs/index.html#api/en/cameras/PerspectiveCamera
+      camera.updateProjectionMatrix();
+    });
   </script>
 </body>
 </html>
