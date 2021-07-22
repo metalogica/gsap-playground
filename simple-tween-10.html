@@ -7,6 +7,12 @@
   <title>Tween Playground | ThreeJS Tween</title>
   <style>
     html, body {
+      height: 5000px;
+    }
+
+    section { 
+      height: 100vh;
+      width: 100vw;
       position: fixed;
     }
 
@@ -57,18 +63,38 @@
     camera.position.z = -1000;
 
 
-
+    var textureLoader = new THREE.TextureLoader();
 
     function makePlanet() {
+      var texture = textureLoader.load('assets/planet-wilson/earth.jpg');
       var geometry = new THREE.SphereGeometry(800, 128, 128);
       var material = new THREE.MeshLambertMaterial({
-        color: 0x2727e6
+        map: texture
       });
       var mesh = new THREE.Mesh(geometry, material);
 
       scene.add(mesh);
+      
+      return mesh
     };
-    makePlanet();
+
+    var earth = makePlanet();
+
+    function makeRing(width, color) {
+      var geometry = new THREE.TorusGeometry(width, 5, 16, 100);
+      var material = new THREE.MeshBasicMaterial({ color: color });
+      var mesh = new THREE.Mesh(geometry, material);
+
+      mesh.geometry.rotateX(Math.PI / 2);
+      mesh.geometry.rotateZ(Math.PI / 10);
+
+      scene.add(mesh);
+      return mesh
+    }
+
+    var ring1 = makeRing(900, 0xff4141);
+    var ring2 = makeRing(950, 0xffffff);
+    var ring3 = makeRing(985, 0xffdb00);
 
 
 
@@ -77,9 +103,15 @@
     var animate = function() {
       camera.lookAt(scene.position);
 
-      renderer.render(scene, camera);
+      // rorate on geometry (object) to rotate in regards to world space and not local space (Euler angle itself)
+      ring1.geometry.rotateY(0.004);
+      ring2.geometry.rotateY(-0.004);
+      ring3.geometry.rotateY(0.0375);
 
+      renderer.render(scene, camera);
       requestAnimationFrame(animate);
+      // replaced with document.addEventListener('scroll', function() { ... }
+      // earth.rotateY(0.01);
     };
     animate();
 
@@ -89,7 +121,13 @@
 
       renderer.setSize(window.innerWidth, window.innerHeight);
     });
+    
+    document.addEventListener('scroll', function() {
+      // offset * 1/100 to smooth out the rotation speed
+      var scrollPosition = window.pageYOffset / 500;
 
+      earth.rotation.set(0, scrollPosition, 0);
+    });
   </script>
 </body>
 </html>
