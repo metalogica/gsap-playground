@@ -91,6 +91,30 @@
       return mesh;
     };
 
+    function makeStars() {
+      var geometry = new THREE.BufferGeometry();
+
+      for (let i = 0; i < 5000; i +=1) {
+        var point = new THREE.Vector3(
+          2000 * Math.random(),
+          2000 * Math.random(),
+          2000 * Math.random()
+        )
+
+        console.dir(geometry)
+        // geometry.vertices.push(point);
+        geometry.setAttribute(point);
+      }
+
+      var material = new THREE.PointsMaterial({color: 0xffffff});
+      var points = new THREE.Points(geometry, material);
+
+      scene.add(points);
+
+      return points
+    };
+    makeStars();
+
     var moon = makeMoon();
     var moonGroup = new THREE.Group();
     moonGroup.add(moon)
@@ -117,10 +141,22 @@
 
 
 
-
+    // mouse camer pan controls
+    var currentX = 0;
+    var currentY = 0;
+    var aimX = 0;
+    var aimY = 0;
 
     var animate = function() {
       camera.lookAt(scene.position);
+
+      // camera pan adjustment
+      var diffX = aimX - currentX;
+      var diffY = aimY - currentY;
+      currentX += diffX * 1.05;
+      currentY += diffY * 1.05;
+      camera.position.x = currentX;
+      camera.position.y = currentY;
 
       // rotate on geometry (object) to rotate in regards to world space and not local space (Euler angle itself)
       ring1.geometry.rotateY(0.004);
@@ -149,6 +185,16 @@
       var scrollPosition = window.pageYOffset / 500;
 
       earth.rotation.set(0, scrollPosition, 0);
+    });
+
+    document.addEventListener('mousemove', function(event) {
+      aimX = (window.innerWidth / 2) - event.pageX * 2;
+      aimY = (window.innerHeight / 2) - event.pageY * 2;
+    });
+
+    document.addEventListener('touchmove', function(event) {
+      aimX = (window.innerWidth / 2) - event.pageX * 2;
+      aimY = (window.innerHeight / 2) - event.pageY * 2;
     });
   </script>
 </body>
