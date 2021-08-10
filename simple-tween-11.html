@@ -24,13 +24,45 @@
       color: rgba(0,0,0,0.5);
     }
 
+    canvas {
+      vertical-align: bottom;
+    }
+
   </style>
 </head>
 <body>
-    <a href="index.html">Back</a>
-
+    <section></section>
   <script src="three.js"></script>
   <script>
+    const renderer = new THREE.WebGLRenderer({
+      antialias: true
+    });
+
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(window.pixelDeviceRatio);
+    renderer.setClearColor(0xffffff);
+
+    const sectionTag = document.querySelector('section');
+    sectionTag.appendChild(renderer.domElement);
+
+    const scene = new THREE.Scene();
+
+    const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 10000);
+    camera.position.z -= 900;
+
+    const animate = () => {
+      renderer.render(scene);
+      requestAnimationFrame(animate);
+    }
+
+    animate();
+
+    window.addEventListener('resize', () => {
+      camera.aspect = widow.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    })
 
   </script>
 </body>
