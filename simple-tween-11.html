@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Tween Playground | Polycat</title>
+  <title>Tween Playground | Matter JS</title>
   <style>
     body {
       font-family: sans-serif;
@@ -23,47 +23,33 @@
     a:hover {
       color: rgba(0,0,0,0.5);
     }
-
-    canvas {
-      vertical-align: bottom;
-    }
-
   </style>
 </head>
 <body>
-    <section></section>
-  <script src="three.js"></script>
+  <section></section>
+  <script src="matter.min.js"></script>
   <script>
-    const renderer = new THREE.WebGLRenderer({
-      antialias: true
+    const sectionTag = document.querySelector('section');
+
+    const h = window.innerHeight;
+    const w = window.innerWidth;
+
+    const engine = Matter.Engine.create();
+    const renderer = Matter.Render.create({
+      element: sectionTag,
+      engine: engine,
+      options: {
+        height: h,
+        width: w,
+        background: '#000000',
+        wireframes: false,
+        pixelRatio: window.devicePixelRatio
+      }
     });
 
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.setPixelRatio(window.pixelDeviceRatio);
-    renderer.setClearColor(0xffffff);
-
-    const sectionTag = document.querySelector('section');
-    sectionTag.appendChild(renderer.domElement);
-
-    const scene = new THREE.Scene();
-
-    const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 10000);
-    camera.position.z -= 1100;
-
-    const animate = () => {
-      renderer.render(scene);
-      requestAnimationFrame(animate);
-    }
-
-    animate();
-
-    window.addEventListener('resize', () => {
-      camera.aspect = widow.innerWidth / window.innerHeight;
-      camera.updateProjectionMatrix();
-
-      renderer.setSize(window.innerWidth, window.innerHeight);
-    })
-
+    const { Engine, Render } = Matter;
+    Engine.run(engine);
+    Render.run(renderer);
   </script>
 </body>
 </html>
