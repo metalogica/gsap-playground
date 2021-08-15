@@ -50,8 +50,28 @@
     });
 
     const createShape = function(x, y) {
-      return Bodies.circle(x, y, 100 * Math.random());
-    }
+      return Bodies.circle(x, y, 20 + 20 * Math.random());
+    };
+
+    //                               x, y, radius
+    const bigBall = Bodies.circle(w/2, h/2, 250, {
+      isStatic: true,
+      render: {
+        fillStyle: "#ffffff"
+      }
+    });
+    //                       x-pos, y-pos, width, height
+    const floor = Bodies.rectangle(w/2, h , w, 1, {
+      isStatic: true,
+      fill: 'red',
+      render: {
+        visible: false
+      }
+    });
+    World.add(engine.world, [
+      bigBall,
+      floor
+    ]);
 
     document.addEventListener('click', function(event) {
       const shape = createShape(event.pageX, event.pageY);
