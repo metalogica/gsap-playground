@@ -12,6 +12,10 @@
       padding: 0;
       width: 100vw;
       height: 100vh;
+      line-height: 1.5;
+
+      background-color: #ffffff;
+      color: #333333;
     }
 
     a, a:link, a:visited, a:active {
@@ -23,10 +27,22 @@
     a:hover {
       color: rgba(0,0,0,0.5);
     }
+
+    section.split {
+      position: fixed;
+      top: 0;
+      right: 0;
+      width: 50%;
+      height: 100%;
+      background-color: white;
+      mix-blend-mode: difference;
+      pointer-events: none;
+    }
   </style>
 </head>
 <body>
   <section></section>
+  <section class="split"></section>
   <script src="matter.min.js"></script>
   <script>
     const { Engine, Render, Bodies, World, MouseConstraint, Composites } = Matter;
