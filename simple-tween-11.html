@@ -76,8 +76,8 @@
       });
     };
 
-    //                               x, y, radius
-    const bigBall = Bodies.circle(w/2, h/2, 250, {
+    //                               x, y, radius (Math.min used for handheld orientation)
+    const bigBall = Bodies.circle(w/2, h/2, Math.min(w/(3.5), h/(3.5)), {
       isStatic: true,
       render: {
         fillStyle: "#ffffff"
@@ -137,6 +137,11 @@
         shape.force.y=0.1;
       })
     });
+
+    window.addEventListener('deviceorientation', () => {
+      engine.world.gravity.x = event.gamma / 30;
+      engine.world.gravity.y = event.beta / 30;
+    })
 
     Engine.run(engine);
     Render.run(renderer);
