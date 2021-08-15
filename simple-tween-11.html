@@ -45,7 +45,7 @@
   <section class="split"></section>
   <script src="matter.min.js"></script>
   <script>
-    const { Engine, Render, Bodies, World, MouseConstraint, Composites } = Matter;
+    const { Engine, Render, Bodies, World, MouseConstraint, Composites, Query } = Matter;
 
     const sectionTag = document.querySelector('section');
     const h = window.innerHeight;
@@ -123,8 +123,35 @@
       World.add(engine.world, shape);
     });
 
+    document.addEventListener('mousemove', function(event) {
+      const vector = { x: event.pageX, y: event.pageY };
+      //                                      target          condition
+      const hoveredShapes = Query.point(initialShapes.bodies, vector);
+
+      hoveredShapes.forEach(shape => {
+        // console.log(shape);
+        // shape.render.sprite = null;
+        // shape.render.fillStyle = 'red';
+        // shape.render.sprite.xScale = 0.65;
+        // shape.render.sprite.yScale = 0.65;
+        shape.force.y=0.1;
+      })
+    });
+
     Engine.run(engine);
     Render.run(renderer);
+
+    let time = 0;
+    function changeGravity() {
+      time += 0.1;
+
+      engine.world.gravity.x = Math.sin(time);
+      engine.world.gravity.y = Math.cos(time);
+
+      requestAnimationFrame(changeGravity);
+    }
+
+    changeGravity();
   </script>
 </body>
 </html>
