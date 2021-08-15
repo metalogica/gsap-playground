@@ -29,6 +29,8 @@
   <section></section>
   <script src="matter.min.js"></script>
   <script>
+    const { Engine, Render, Bodies, World } = Matter;
+
     const sectionTag = document.querySelector('section');
 
     const h = window.innerHeight;
@@ -47,7 +49,15 @@
       }
     });
 
-    const { Engine, Render } = Matter;
+    const createShape = function(x, y) {
+      return Bodies.circle(x, y, 100 * Math.random());
+    }
+
+    document.addEventListener('click', function(event) {
+      const shape = createShape(event.pageX, event.pageY);
+      World.add(engine.world, shape);
+    });
+
     Engine.run(engine);
     Render.run(renderer);
   </script>
