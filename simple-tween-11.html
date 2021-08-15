@@ -60,17 +60,24 @@
         fillStyle: "#ffffff"
       }
     });
-    //                       x-pos, y-pos, width, height
-    const floor = Bodies.rectangle(w/2, h , w, 1, {
+    const wallOptions = {
       isStatic: true,
-      fill: 'red',
       render: {
         visible: false
       }
-    });
+    }
+    //                       x-pos, y-pos, width, height
+    const floor = Bodies.rectangle(w/2, h , w, 1, wallOptions);
+    const ceiling = Bodies.rectangle(w/2, 1, w, 1, wallOptions);
+    const leftWall = Bodies.rectangle(1, h/2, 1, h, wallOptions);
+    const rightWall = Bodies.rectangle(w, h/2, 1, h, wallOptions)
+
     World.add(engine.world, [
       bigBall,
-      floor
+      floor,
+      ceiling,
+      leftWall,
+      rightWall
     ]);
 
     document.addEventListener('click', function(event) {
