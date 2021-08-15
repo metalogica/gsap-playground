@@ -29,10 +29,9 @@
   <section></section>
   <script src="matter.min.js"></script>
   <script>
-    const { Engine, Render, Bodies, World } = Matter;
+    const { Engine, Render, Bodies, World, MouseConstraint, Composites } = Matter;
 
     const sectionTag = document.querySelector('section');
-
     const h = window.innerHeight;
     const w = window.innerWidth;
 
@@ -70,14 +69,29 @@
     const floor = Bodies.rectangle(w/2, h , w, 1, wallOptions);
     const ceiling = Bodies.rectangle(w/2, 1, w, 1, wallOptions);
     const leftWall = Bodies.rectangle(1, h/2, 1, h, wallOptions);
-    const rightWall = Bodies.rectangle(w, h/2, 1, h, wallOptions)
+    const rightWall = Bodies.rectangle(w, h/2, 1, h, wallOptions);
+
+    const initialShapes = Composites.stack(50, 50, 15, 5, 40, 40, function(x,y) {
+      return createShape(x, y);
+    });
+
+    const mouseControl = MouseConstraint.create(engine, {
+      element: sectionTag,
+      constraint: {
+        render: {
+          visible: false
+        }
+      }
+    })
 
     World.add(engine.world, [
       bigBall,
       floor,
       ceiling,
       leftWall,
-      rightWall
+      rightWall,
+      mouseControl,
+      initialShapes
     ]);
 
     document.addEventListener('click', function(event) {
