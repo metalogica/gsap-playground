@@ -49,7 +49,15 @@
     });
 
     const createShape = function(x, y) {
-      return Bodies.circle(x, y, 20 + 20 * Math.random());
+      return Bodies.rectangle(x, y, 38, 50, {
+        render: {
+          sprite: {
+            texture: "assets/hi-vs-hi/outline-2x.png",
+            xScale: 0.5,
+            yScale: 0.5
+          }
+        }
+      });
     };
 
     //                               x, y, radius
