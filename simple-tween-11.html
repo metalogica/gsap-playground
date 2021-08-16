@@ -95,7 +95,7 @@
     const leftWall = Bodies.rectangle(1, h/2, 1, h, wallOptions);
     const rightWall = Bodies.rectangle(w, h/2, 1, h, wallOptions);
 
-    const initialShapes = Composites.stack(50, 50, 15, 5, 40, 40, function(x,y) {
+    const initialShapes = Composites.stack(50, h-110, 20, 2, 5, 5, function(x,y) {
       return createShape(x, y);
     });
 
@@ -150,8 +150,8 @@
     function changeGravity() {
       time += 0.1;
 
-      engine.world.gravity.x = Math.sin(time);
-      engine.world.gravity.y = Math.cos(time);
+      // engine.world.gravity.x = Math.sin(time);
+      engine.world.gravity.y = Math.cos(3*time) - 0.01;
 
       requestAnimationFrame(changeGravity);
     }
